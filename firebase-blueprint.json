@@ -1,0 +1,173 @@
+{
+  "entities": {
+    "Organization": {
+      "title": "Organization",
+      "description": "Represents a business entity in the SaaS platform.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "ownerUid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "gstNumber": { "type": "string" },
+        "state": { "type": "string", "description": "Business state for GST calculation" },
+        "subscriptionStatus": { "type": "string", "enum": ["pending_approval", "trial", "active", "expired"] },
+        "razorpayKeyId": { "type": "string" },
+        "razorpayKeySecret": { "type": "string" },
+        "twoFactorEnabled": { "type": "boolean" },
+        "twoFactorPin": { "type": "string" }
+      },
+      "required": ["name", "ownerUid", "createdAt", "subscriptionStatus"]
+    },
+    "User": {
+      "title": "User",
+      "description": "A user belonging to an organization.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["admin", "manager", "staff", "accountant", "viewer"] },
+        "organizationId": { "type": "string" }
+      },
+      "required": ["name", "email", "role", "organizationId"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "A client of an organization.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "companyName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "gstNumber": { "type": "string" },
+        "billingAddress": { "type": "string" },
+        "shippingAddress": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "country": { "type": "string" },
+        "pincode": { "type": "string" },
+        "segmentation": { "type": "string", "enum": ["Retail", "Wholesale", "Corporate"] },
+        "creditLimit": { "type": "number" },
+        "paymentTerms": { "type": "string", "enum": ["Net 15", "Net 30", "Net 60"] },
+        "lifetimeValue": { "type": "number" },
+        "outstandingBalance": { "type": "number" },
+        "organizationId": { "type": "string" }
+      },
+      "required": ["name", "organizationId", "segmentation"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Goods or services sold by the organization.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "sku": { "type": "string" },
+        "barcode": { "type": "string" },
+        "category": { "type": "string" },
+        "subcategory": { "type": "string" },
+        "description": { "type": "string" },
+        "uom": { "type": "string" },
+        "costPrice": { "type": "number" },
+        "sellingPrice": { "type": "number" },
+        "wholesalePrice": { "type": "number" },
+        "taxRate": { "type": "number" },
+        "discountAllowed": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "organizationId": { "type": "string" }
+      },
+      "required": ["name", "sku", "sellingPrice", "taxRate", "organizationId", "uom", "category"]
+    },
+    "Inventory": {
+      "title": "Inventory",
+      "description": "Stock tracking for products in specific locations.",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "warehouseLocation": { "type": "string" },
+        "stockQuantity": { "type": "number" },
+        "minimumStockLevel": { "type": "number" },
+        "reorderLevel": { "type": "number" },
+        "reorderQuantity": { "type": "number" },
+        "batchNumber": { "type": "string" },
+        "expiryDate": { "type": "string", "format": "date" },
+        "organizationId": { "type": "string" }
+      },
+      "required": ["productId", "warehouseLocation", "stockQuantity", "organizationId"]
+    },
+    "InventoryLog": {
+      "title": "Inventory Log",
+      "description": "History of stock changes.",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "inventoryId": { "type": "string" },
+        "type": { "type": "string", "enum": ["in", "out", "adjustment"] },
+        "change": { "type": "number" },
+        "reason": { "type": "string" },
+        "warehouseLocation": { "type": "string" },
+        "userId": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "organizationId": { "type": "string" }
+      },
+      "required": ["productId", "change", "date", "organizationId", "type", "userId"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "Billing document sent to a customer.",
+      "type": "object",
+      "properties": {
+        "invoiceNumber": { "type": "string" },
+        "customerId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "dueDate": { "type": "string", "format": "date" },
+        "status": { "type": "string", "enum": ["paid", "unpaid", "partially_paid", "overdue", "draft"] },
+        "totalAmount": { "type": "number" },
+        "totalTax": { "type": "number" },
+        "totalDiscount": { "type": "number" },
+        "grandTotal": { "type": "number" },
+        "isRecurring": { "type": "boolean" },
+        "recurringInterval": { "type": "string", "enum": ["monthly", "quarterly", "yearly"] },
+        "organizationId": { "type": "string" }
+      },
+      "required": ["invoiceNumber", "customerId", "date", "dueDate", "status", "grandTotal", "organizationId"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Business expenditure.",
+      "type": "object",
+      "properties": {
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string", "format": "date" },
+        "description": { "type": "string" },
+        "organizationId": { "type": "string" }
+      },
+      "required": ["category", "amount", "date", "organizationId"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Record of payment received for an invoice.",
+      "type": "object",
+      "properties": {
+        "invoiceId": { "type": "string" },
+        "amount": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "paymentDate": { "type": "string", "format": "date" },
+        "status": { "type": "string" },
+        "organizationId": { "type": "string" }
+      },
+      "required": ["invoiceId", "amount", "paymentDate", "organizationId"]
+    }
+  },
+  "firestore": {
+    "organizations": { "schema": "Organization", "description": "Top-level organizations" },
+    "users": { "schema": "User", "description": "Platform users mapped to organizations" },
+    "customers": { "schema": "Customer", "description": "Customers of organizations" },
+    "products": { "schema": "Product", "description": "Products/Services catalog" },
+    "inventory": { "schema": "Inventory", "description": "Stock tracking per location" },
+    "invoices": { "schema": "Invoice", "description": "Invoices generated" },
+    "expenses": { "schema": "Expense", "description": "Business expenses" },
+    "payments": { "schema": "Payment", "description": "Payment records" },
+    "inventory_logs": { "schema": "InventoryLog", "description": "Inventory change history" }
+  }
+}

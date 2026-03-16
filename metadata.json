@@ -1,0 +1,5 @@
+{
+  "name": "AcuLedger",
+  "description": "A comprehensive multi-tenant billing and invoicing platform for organizations to manage customers, products, invoices, and expenses.",
+  "requestFramePermissions": []
+}
